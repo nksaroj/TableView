@@ -110,6 +110,8 @@ public interface ITableView {
 
     void sortRowHeader(SortState sortState);
 
+    void resetSortState();
+
     void remeasureColumnWidth(int column);
 
     AbstractTableAdapter getAdapter();
