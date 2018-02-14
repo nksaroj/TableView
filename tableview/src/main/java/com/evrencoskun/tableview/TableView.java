@@ -441,6 +441,14 @@ public class TableView extends FrameLayout implements ITableView {
     }
 
     @Override
+    public void resetSortState() {
+        for(int columnIndex = 0; columnIndex < mTableAdapter.getColumnHeaderItemCount(); columnIndex++) {
+            mColumnSortHandler.sort(columnIndex, SortState.UNSORTED);
+        }
+        mColumnSortHandler.sortByRowHeader(SortState.UNSORTED);
+    }
+
+    @Override
     public void remeasureColumnWidth(int column) {
         // Remove calculated width value to be ready for recalculation.
         getColumnHeaderLayoutManager().removeCachedWidth(column);
