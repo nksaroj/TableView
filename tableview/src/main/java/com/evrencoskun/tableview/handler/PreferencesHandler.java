@@ -43,8 +43,6 @@ public class PreferencesHandler {
         preferences.columnPositionOffset = scrollHandler.getColumnPositionOffset();
         preferences.rowPosition = scrollHandler.getRowPosition();
         preferences.rowPositionOffset = scrollHandler.getRowPositionOffset();
-        preferences.selectedColumnPosition = selectionHandler.getSelectedColumnPosition();
-        preferences.selectedRowPosition = selectionHandler.getSelectedRowPosition();
         return preferences;
     }
 

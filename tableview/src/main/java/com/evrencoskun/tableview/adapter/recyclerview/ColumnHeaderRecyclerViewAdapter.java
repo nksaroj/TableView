@@ -25,6 +25,7 @@ import com.evrencoskun.tableview.adapter.ITableAdapter;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractSorterViewHolder;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder.SelectionState;
+import com.evrencoskun.tableview.handler.ISelectableModel;
 import com.evrencoskun.tableview.sort.ColumnSortHelper;
 import com.evrencoskun.tableview.sort.SortState;
 
@@ -56,6 +57,19 @@ public class ColumnHeaderRecyclerViewAdapter<CH> extends AbstractRecyclerViewAda
         AbstractViewHolder viewHolder = (AbstractViewHolder) holder;
         Object value = getItem(position);
 
+        // Apply Selection Style
+        if(mTableAdapter.getTableView().isSelectable()) {
+            if (value instanceof ISelectableModel) {
+                viewHolder.setSelected(((ISelectableModel) value).getSelectionState());
+                final int color = mTableAdapter.getColorForSelection(((ISelectableModel) value).getSelectionState());
+                viewHolder.setBackgroundColor(color);
+            } else if(value != null){
+                // trigger exception, if isSelectable, Cells MUST implements ISelectableModel
+                throw new ClassCastException("Invalid Class type for CH: "+position+", ISelectableModel expected. Please implement ISelectable in your ColumnHeaderCell in order to have it selectable.");
+
+            }
+        }
+
         mTableAdapter.onBindColumnHeaderViewHolder(viewHolder, value, position);
     }
 
@@ -69,19 +83,21 @@ public class ColumnHeaderRecyclerViewAdapter<CH> extends AbstractRecyclerViewAda
         super.onViewAttachedToWindow(holder);
         AbstractViewHolder viewHolder = (AbstractViewHolder) holder;
 
-        SelectionState selectionState = mTableAdapter.getTableView().getSelectionHandler()
-                .getColumnSelectionState(viewHolder.getAdapterPosition());
+        if(mTableAdapter.getTableView().isSelectable()) {
+            SelectionState selectionState = mTableAdapter.getTableView().getSelectionHandler()
+                    .getSelectionStateColumnHeader(viewHolder.getAdapterPosition());
 
-        // Control to ignore selection color
-        if (!mTableAdapter.getTableView().isIgnoreSelectionColors()) {
+            // Control to ignore selection color
+            if (!mTableAdapter.getTableView().isIgnoreSelectionColors()) {
 
-            // Change background color of the view considering it's selected state
-            mTableAdapter.getTableView().getSelectionHandler()
-                    .changeColumnBackgroundColorBySelectionStatus(viewHolder, selectionState);
+                // Change background color of the view considering it's selected state
+                mTableAdapter.getTableView().getSelectionHandler()
+                        .changeColumnBackgroundColorBySelectionStatus(viewHolder, selectionState);
+            }
+
+            // Change selection status
+            viewHolder.setSelected(selectionState);
         }
-
-        // Change selection status
-        viewHolder.setSelected(selectionState);
 
         // Control whether the TableView is sortable or not.
         if (mTableAdapter.getTableView().isSortable()) {

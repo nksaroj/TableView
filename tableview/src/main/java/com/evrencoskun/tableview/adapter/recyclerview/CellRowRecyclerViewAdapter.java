@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import com.evrencoskun.tableview.adapter.ITableAdapter;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder.SelectionState;
+import com.evrencoskun.tableview.handler.ISelectableModel;
 
 import java.util.List;
 
@@ -62,6 +63,18 @@ public class CellRowRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C
             AbstractViewHolder viewHolder = (AbstractViewHolder) holder;
             Object value = getItem(xPosition);
 
+            // Apply Selection Style
+            if(mTableAdapter.getTableView().isSelectable()) {
+                if (value instanceof ISelectableModel) {
+                    viewHolder.setSelected(((ISelectableModel) value).getSelectionState());
+                    int color = mTableAdapter.getColorForSelection(((ISelectableModel) value).getSelectionState());
+                    viewHolder.setBackgroundColor(color);
+                } else if(value != null){
+                    // trigger exception, if isSelectable, Cells MUST implements ISelectableModel
+                    throw new ClassCastException("Invalid Class type for Cell: ("+mYPosition+","+xPosition+"), ISelectableModel expected. Please implement ISelectable in your Cell in order to have it selectable.");
+                }
+            }
+
             mTableAdapter.onBindCellViewHolder(viewHolder, value, xPosition, mYPosition);
         }
     }
@@ -78,23 +91,25 @@ public class CellRowRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        AbstractViewHolder viewHolder = (AbstractViewHolder) holder;
+        
+        if(mTableAdapter.getTableView().isSelectable()) {
+            AbstractViewHolder viewHolder = (AbstractViewHolder) holder;
+            SelectionState selectionState = mTableAdapter.getTableView().getSelectionHandler()
+                    .getSelectionStateCell(holder.getAdapterPosition(), mYPosition);
 
-        SelectionState selectionState = mTableAdapter.getTableView().getSelectionHandler()
-                .getCellSelectionState(holder.getAdapterPosition(), mYPosition);
+            // Control to ignore selection color
+            if (!mTableAdapter.getTableView().isIgnoreSelectionColors()) {
 
-        // Control to ignore selection color
-        if (!mTableAdapter.getTableView().isIgnoreSelectionColors()) {
-
-            // Change the background color of the view considering selected row/cell position.
-            if (selectionState == SelectionState.SELECTED) {
-                viewHolder.setBackgroundColor(mTableAdapter.getTableView().getSelectedColor());
-            } else {
-                viewHolder.setBackgroundColor(mTableAdapter.getTableView().getUnSelectedColor());
+                // Change the background color of the view considering selected row/cell position.
+                if (selectionState == SelectionState.SELECTED) {
+                    viewHolder.setBackgroundColor(mTableAdapter.getTableView().getSelectedColor());
+                } else {
+                    viewHolder.setBackgroundColor(mTableAdapter.getTableView().getUnSelectedColor());
+                }
             }
-        }
 
-        // Change selection status
-        viewHolder.setSelected(selectionState);
+            // Change selection status
+            viewHolder.setSelected(selectionState);
+        }
     }
 }

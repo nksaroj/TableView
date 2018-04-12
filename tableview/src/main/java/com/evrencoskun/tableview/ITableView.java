@@ -51,6 +51,10 @@ public interface ITableView {
 
     boolean isSortable();
 
+    boolean isSelectable();
+
+    void setSelectable(boolean selectable);
+
     CellRecyclerView getCellRecyclerView();
 
     CellRecyclerView getColumnHeaderRecyclerView();
@@ -116,6 +120,8 @@ public interface ITableView {
     void sortColumn(int columnPosition, SortState sortState);
 
     void sortRowHeader(SortState sortState);
+
+    void resetSortState();
 
     void remeasureColumnWidth(int column);
 

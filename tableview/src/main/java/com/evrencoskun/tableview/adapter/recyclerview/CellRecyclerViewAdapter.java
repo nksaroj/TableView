@@ -124,29 +124,6 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
                 .scrollToPositionWithOffset(mHorizontalListener.getScrollPosition(),
                         mHorizontalListener.getScrollPositionOffset());
 
-        SelectionHandler selectionHandler = mTableAdapter.getTableView().getSelectionHandler();
-
-        if (selectionHandler.isAnyColumnSelected()) {
-
-            AbstractViewHolder cellViewHolder = (AbstractViewHolder) ((CellRowViewHolder) holder)
-                    .m_jRecyclerView.findViewHolderForAdapterPosition(selectionHandler
-                            .getSelectedColumnPosition());
-
-            if (cellViewHolder != null) {
-                // Control to ignore selection color
-                if (!mTableAdapter.getTableView().isIgnoreSelectionColors()) {
-                    cellViewHolder.setBackgroundColor(mTableAdapter.getTableView()
-                            .getSelectedColor());
-                }
-                cellViewHolder.setSelected(SelectionState.SELECTED);
-
-            }
-        } else if (selectionHandler.isRowSelected(holder.getAdapterPosition())) {
-
-            viewHolder.m_jRecyclerView.setSelected(SelectionState.SELECTED, mTableAdapter
-                    .getTableView().getSelectedColor(), mTableAdapter.getTableView()
-                    .isIgnoreSelectionColors());
-        }
 
     }
 
@@ -194,6 +171,27 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
 
     }
 
+
+    public C getItem(int rowPosition, int columnPosition) {
+        if(mItemList.size() > rowPosition) {
+            List<C> row = (List<C>) mItemList.get(rowPosition);
+            if(row.size() > columnPosition) {
+                return row.get(columnPosition);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method helps to get cell item model that is located on given row position.
+     *
+     * @param rowPosition
+     */
+    public List<C> getRowItems(int rowPosition) {
+        List<C> cellItems = new ArrayList<>();
+
+        return  (List<C>) mItemList.get(rowPosition);
+    }
 
     /**
      * This method helps to get cell item model that is located on given column position.

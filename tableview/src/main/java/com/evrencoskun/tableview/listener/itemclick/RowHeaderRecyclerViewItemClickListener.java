@@ -49,8 +49,8 @@ public class RowHeaderRecyclerViewItemClickListener extends AbstractItemClickLis
             int row = holder.getAdapterPosition();
 
             // Control to ignore selection color
-            if (!mTableView.isIgnoreSelectionColors()) {
-                mSelectionHandler.setSelectedRowPosition(holder, row);
+            if (!mTableView.isIgnoreSelectionColors() && mTableView.isSelectable()) {
+                mSelectionHandler.setSelectedRowPosition(row);
             }
 
             if (getTableViewListener() != null) {
