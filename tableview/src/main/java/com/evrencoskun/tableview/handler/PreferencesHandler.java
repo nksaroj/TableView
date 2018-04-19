@@ -50,7 +50,5 @@ public class PreferencesHandler {
     public void loadPreferences(Preferences preferences){
         scrollHandler.scrollToColumnPosition(preferences.columnPosition, preferences.columnPositionOffset);
         scrollHandler.scrollToRowPosition(preferences.rowPosition, preferences.rowPositionOffset);
-        selectionHandler.setSelectedColumnPosition(preferences.selectedColumnPosition);
-        selectionHandler.setSelectedRowPosition(preferences.selectedRowPosition);
     }
 }
