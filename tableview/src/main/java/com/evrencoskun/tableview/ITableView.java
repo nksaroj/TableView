@@ -49,6 +49,8 @@ public interface ITableView {
     boolean isIgnoreSelectionColors();
 
     boolean isShowHorizontalSeparators();
+    
+    boolean isShowVerticalSeparators();
 
     boolean isSortable();
 
@@ -79,6 +81,8 @@ public interface ITableView {
     ColumnSortHandler getColumnSortHandler();
 
     DividerItemDecoration getHorizontalItemDecoration();
+    
+    DividerItemDecoration getVerticalItemDecoration();
 
     SortState getSortingStatus(int column);
 
