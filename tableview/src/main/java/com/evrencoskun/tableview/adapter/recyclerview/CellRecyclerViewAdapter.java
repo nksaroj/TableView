@@ -191,9 +191,11 @@ public class CellRecyclerViewAdapter<C> extends AbstractRecyclerViewAdapter<C> {
      * @param rowPosition
      */
     public List<C> getRowItems(int rowPosition) {
-        List<C> cellItems = new ArrayList<>();
-
-        return  (List<C>) mItemList.get(rowPosition);
+        if(mItemList.size() > rowPosition) {
+            return (List<C>) mItemList.get(rowPosition);
+        } else {
+            return null;
+        }
     }
 
     /**
